@@ -81,6 +81,8 @@ const backBtn = document.getElementById('backBtn');
 const prevPageBtn = document.getElementById('prevPage');
 const nextPageBtn = document.getElementById('nextPage');
 const pageIndicator = document.getElementById('pageIndicator');
+const tabPlayersBtn = document.getElementById('tabPlayers');
+const tabFactionsBtn = document.getElementById('tabFactions');
 
 const state = {
   selected: new Set(factions.filter((f) => f.set === 'Base Game').map((f) => f.id)),
@@ -88,8 +90,14 @@ const state = {
   names: Array.from({ length: 4 }, (_, i) => `Player ${i + 1}`),
   lastResult: null,
   page: 0,
-  pageSize: 8
+  pageSize: 8,
+  step: 'players'
 };
+
+function updatePageSize() {
+  const isSmall = window.innerWidth <= 520 || window.innerHeight <= 700;
+  state.pageSize = isSmall ? 4 : 8;
+}
 
 function updatePlayerInputs() {
   const count = Number(playerCountInput.value) || 1;
@@ -326,6 +334,13 @@ function showSettings() {
   settingsView.classList.remove('hidden');
 }
 
+function setStep(step) {
+  state.step = step;
+  settingsView.dataset.step = step;
+  tabPlayersBtn.classList.toggle('active', step === 'players');
+  tabFactionsBtn.classList.toggle('active', step === 'factions');
+}
+
 playerCountInput.addEventListener('change', updatePlayerInputs);
 playerCountInput.addEventListener('input', updatePlayerInputs);
 
@@ -346,6 +361,8 @@ nextPageBtn.addEventListener('click', () => {
   state.page += 1;
   renderFactions();
 });
+tabPlayersBtn.addEventListener('click', () => setStep('players'));
+tabFactionsBtn.addEventListener('click', () => setStep('factions'));
 selectBaseBtn.addEventListener('click', () => {
   state.selected = new Set(factions.filter((f) => f.set === 'Base Game').map((f) => f.id));
   updateCounts();
@@ -367,5 +384,12 @@ clearAllBtn.addEventListener('click', () => {
 
 updatePlayerInputs();
 updateCounts();
+updatePageSize();
 renderFactions();
 renderResults();
+setStep('players');
+
+window.addEventListener('resize', () => {
+  updatePageSize();
+  renderFactions();
+});

@@ -17,7 +17,11 @@
     </header>
 
     <main class="view" id="settingsView">
-      <section class="panel">
+      <div class="settings-tabs">
+        <button id="tabPlayers" class="chip active">Players</button>
+        <button id="tabFactions" class="chip">Factions</button>
+      </div>
+      <section class="panel" data-step="players">
         <h2>Players</h2>
         <div class="field-row">
           <label for="playerCount">Number of players</label>
@@ -26,7 +30,7 @@
         <div id="playerInputs" class="stack"></div>
       </section>
 
-      <section class="panel">
+      <section class="panel" data-step="factions">
         <div class="panel-header">
           <h2>Factions</h2>
           <div class="panel-actions">

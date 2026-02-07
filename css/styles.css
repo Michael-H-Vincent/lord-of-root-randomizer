@@ -99,6 +99,11 @@ h1 {
   font-size: 0.85rem;
 }
 
+.chip.active {
+  background: var(--forest);
+  color: #fff;
+}
+
 .hint {
   margin: 0;
   font-size: 0.85rem;
@@ -109,6 +114,11 @@ h1 {
   display: grid;
   gap: 18px;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.settings-tabs {
+  display: none;
+  gap: 10px;
 }
 
 .hidden {
@@ -272,6 +282,42 @@ input[type="number"] {
 @media (max-width: 880px) {
   .page {
     padding: 20px;
+  }
+
+  .settings-tabs {
+    display: flex;
+  }
+
+  #settingsView[data-step="players"] [data-step="factions"],
+  #settingsView[data-step="factions"] [data-step="players"] {
+    display: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .page {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  h1 {
+    font-size: clamp(1.6rem, 6vw, 2.2rem);
+  }
+
+  .panel {
+    padding: 14px;
+    gap: 12px;
+  }
+
+  input[type="text"],
+  input[type="number"] {
+    padding: 8px 10px;
+  }
+
+  .primary,
+  .ghost,
+  .chip {
+    padding: 8px 12px;
   }
 }
 
