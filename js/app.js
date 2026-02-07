@@ -78,9 +78,6 @@ const selectBaseBtn = document.getElementById('selectBase');
 const selectAllBtn = document.getElementById('selectAll');
 const clearAllBtn = document.getElementById('clearAll');
 const backBtn = document.getElementById('backBtn');
-const prevPageBtn = document.getElementById('prevPage');
-const nextPageBtn = document.getElementById('nextPage');
-const pageIndicator = document.getElementById('pageIndicator');
 const tabPlayersBtn = document.getElementById('tabPlayers');
 const tabFactionsBtn = document.getElementById('tabFactions');
 
@@ -89,15 +86,8 @@ const state = {
   players: 4,
   names: Array.from({ length: 4 }, (_, i) => `Player ${i + 1}`),
   lastResult: null,
-  page: 0,
-  pageSize: 8,
   step: 'players'
 };
-
-function updatePageSize() {
-  const isSmall = window.innerWidth <= 520 || window.innerHeight <= 700;
-  state.pageSize = isSmall ? 4 : 8;
-}
 
 function updatePlayerInputs() {
   const count = Number(playerCountInput.value) || 1;
@@ -144,21 +134,7 @@ function renderFactions() {
     faction.name.toLowerCase().includes(term) || faction.set.toLowerCase().includes(term)
   );
 
-  const totalPages = Math.max(1, Math.ceil(filtered.length / state.pageSize));
-  if (state.page >= totalPages) {
-    state.page = totalPages - 1;
-  }
-  if (state.page < 0) {
-    state.page = 0;
-  }
-  const start = state.page * state.pageSize;
-  const pageItems = filtered.slice(start, start + state.pageSize);
-
-  pageIndicator.textContent = `Page ${state.page + 1} of ${totalPages}`;
-  prevPageBtn.disabled = state.page === 0;
-  nextPageBtn.disabled = state.page >= totalPages - 1;
-
-  pageItems.forEach((faction) => {
+  filtered.forEach((faction) => {
     const card = document.createElement('label');
     card.className = 'faction-card';
 
@@ -281,13 +257,26 @@ function renderResults() {
     order.textContent = `${index + 1}`;
 
     const right = document.createElement('div');
+    right.className = 'result-details';
+
+    const icon = document.createElement('img');
+    icon.src = item.faction.icon;
+    icon.alt = `${item.faction.name} icon`;
+    icon.loading = 'lazy';
+    icon.decoding = 'async';
+    icon.className = 'result-icon';
+
     const playerName = document.createElement('strong');
     playerName.textContent = item.player;
     const factionName = document.createElement('span');
     factionName.textContent = item.faction.name;
-    right.appendChild(playerName);
-    right.appendChild(document.createElement('br'));
-    right.appendChild(factionName);
+    const textWrap = document.createElement('div');
+    textWrap.appendChild(playerName);
+    textWrap.appendChild(document.createElement('br'));
+    textWrap.appendChild(factionName);
+
+    right.appendChild(icon);
+    right.appendChild(textWrap);
 
     row.appendChild(order);
     row.appendChild(right);
@@ -346,23 +335,12 @@ function setStep(step) {
 playerCountInput.addEventListener('change', updatePlayerInputs);
 playerCountInput.addEventListener('input', updatePlayerInputs);
 
-factionSearch.addEventListener('input', () => {
-  state.page = 0;
-  renderFactions();
-});
+factionSearch.addEventListener('input', renderFactions);
 randomizeBtn.addEventListener('click', randomize);
 rerollBtn.addEventListener('click', randomize);
 copyBtn.addEventListener('click', copyResults);
 resetBtn.addEventListener('click', resetSelections);
 backBtn.addEventListener('click', showSettings);
-prevPageBtn.addEventListener('click', () => {
-  state.page -= 1;
-  renderFactions();
-});
-nextPageBtn.addEventListener('click', () => {
-  state.page += 1;
-  renderFactions();
-});
 tabPlayersBtn.addEventListener('click', () => setStep('players'));
 tabFactionsBtn.addEventListener('click', () => setStep('factions'));
 selectBaseBtn.addEventListener('click', () => {
@@ -386,12 +364,6 @@ clearAllBtn.addEventListener('click', () => {
 
 updatePlayerInputs();
 updateCounts();
-updatePageSize();
 renderFactions();
 renderResults();
 setStep('players');
-
-window.addEventListener('resize', () => {
-  updatePageSize();
-  renderFactions();
-});
