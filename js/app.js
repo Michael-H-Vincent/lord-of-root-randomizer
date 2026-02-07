@@ -80,6 +80,8 @@ const clearAllBtn = document.getElementById('clearAll');
 const backBtn = document.getElementById('backBtn');
 const tabPlayersBtn = document.getElementById('tabPlayers');
 const tabFactionsBtn = document.getElementById('tabFactions');
+const settingsActions = document.getElementById('settingsActions');
+const actionsPanel = document.querySelector('.actions-panel');
 
 const state = {
   selected: new Set(factions.filter((f) => f.set === 'Base Game').map((f) => f.id)),
@@ -332,6 +334,27 @@ function setStep(step) {
   tabFactionsBtn.classList.toggle('active', step === 'factions');
 }
 
+function syncMobileActions() {
+  const isMobile = window.matchMedia('(max-width: 880px)').matches;
+  if (isMobile) {
+    if (settingsActions && randomizeBtn.parentElement !== settingsActions) {
+      settingsActions.appendChild(randomizeBtn);
+      settingsActions.appendChild(statusHint);
+    }
+    if (resetBtn) {
+      resetBtn.style.display = 'none';
+    }
+  } else {
+    if (actionsPanel && randomizeBtn.parentElement !== actionsPanel) {
+      actionsPanel.insertBefore(randomizeBtn, actionsPanel.firstChild);
+      actionsPanel.appendChild(statusHint);
+    }
+    if (resetBtn) {
+      resetBtn.style.display = '';
+    }
+  }
+}
+
 playerCountInput.addEventListener('change', updatePlayerInputs);
 playerCountInput.addEventListener('input', updatePlayerInputs);
 
@@ -367,3 +390,6 @@ updateCounts();
 renderFactions();
 renderResults();
 setStep('players');
+syncMobileActions();
+
+window.addEventListener('resize', syncMobileActions);

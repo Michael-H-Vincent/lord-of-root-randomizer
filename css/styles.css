@@ -120,6 +120,13 @@ h1 {
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 
+.settings-bar {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .settings-tabs {
   display: none;
   gap: 10px;
@@ -319,8 +326,23 @@ input[type="number"] {
     padding: 20px;
   }
 
+  .settings-bar {
+    display: flex;
+  }
+
   .settings-tabs {
     display: flex;
+  }
+
+  .settings-actions {
+    display: grid;
+    justify-items: end;
+    gap: 4px;
+    text-align: right;
+  }
+
+  #settingsView .actions-panel {
+    display: none;
   }
 
   #settingsView[data-step="players"] [data-step="factions"],
