@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Riverfolk">
-  <rect width="64" height="64" rx="18" fill="#e6f6f6" />
-  <circle cx="32" cy="32" r="18" fill="#43b2b1" />
-  <path d="M20 34 C26 26, 38 26, 44 34" stroke="#0f3f44" stroke-width="4" fill="none" stroke-linecap="round" />
-  <path d="M22 42 C28 34, 36 34, 42 42" stroke="#0f3f44" stroke-width="4" fill="none" stroke-linecap="round" />
-</svg>

@@ -208,8 +208,11 @@ input[type="number"] {
 }
 
 .faction-card img {
-  width: 40px;
-  height: 40px;
+  width: clamp(32px, 7vw, 48px);
+  height: clamp(32px, 7vw, 48px);
+  object-fit: contain;
+  image-rendering: auto;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.08));
 }
 
 .faction-meta {

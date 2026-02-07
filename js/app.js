@@ -3,61 +3,61 @@ const factions = [
     id: 'marquise',
     name: 'Marquise de Cat',
     set: 'Base Game',
-    icon: 'assets/icons/marquise.svg'
+    icon: 'assets/icons/marquise.png'
   },
   {
     id: 'eyrie',
     name: 'Eyrie Dynasties',
     set: 'Base Game',
-    icon: 'assets/icons/eyrie.svg'
+    icon: 'assets/icons/eyrie.png'
   },
   {
     id: 'alliance',
     name: 'Woodland Alliance',
     set: 'Base Game',
-    icon: 'assets/icons/alliance.svg'
+    icon: 'assets/icons/alliance.png'
   },
   {
     id: 'vagabond',
     name: 'Vagabond',
     set: 'Base Game',
-    icon: 'assets/icons/vagabond.svg'
+    icon: 'assets/icons/vagabond.png'
   },
   {
     id: 'riverfolk',
     name: 'Riverfolk Company',
     set: 'Riverfolk Expansion',
-    icon: 'assets/icons/riverfolk.svg'
+    icon: 'assets/icons/riverfolk.png'
   },
   {
     id: 'lizards',
     name: 'Lizard Cult',
     set: 'Riverfolk Expansion',
-    icon: 'assets/icons/lizards.svg'
+    icon: 'assets/icons/lizards.png'
   },
   {
     id: 'duchy',
     name: 'Underground Duchy',
     set: 'Underworld Expansion',
-    icon: 'assets/icons/duchy.svg'
+    icon: 'assets/icons/duchy.png'
   },
   {
     id: 'corvid',
     name: 'Corvid Conspiracy',
     set: 'Underworld Expansion',
-    icon: 'assets/icons/corvid.svg'
+    icon: 'assets/icons/corvid.png'
   },
   {
     id: 'hundreds',
     name: 'Lord of the Hundreds',
     set: 'Marauder Expansion',
-    icon: 'assets/icons/hundreds.svg'
+    icon: 'assets/icons/hundreds.png'
   },
   {
     id: 'keepers',
     name: 'Keepers in Iron',
     set: 'Marauder Expansion',
-    icon: 'assets/icons/keepers.svg'
+    icon: 'assets/icons/keepers.png'
   }
 ];
 
@@ -178,6 +178,8 @@ function renderFactions() {
     const icon = document.createElement('img');
     icon.src = faction.icon;
     icon.alt = `${faction.name} icon`;
+    icon.loading = 'lazy';
+    icon.decoding = 'async';
 
     const meta = document.createElement('div');
     meta.className = 'faction-meta';
