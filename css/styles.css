@@ -43,7 +43,7 @@ body {
 
 .hero {
   display: grid;
-  gap: 12px;
+  gap: 6px;
 }
 
 .hero.compact {
@@ -53,22 +53,22 @@ body {
 .eyebrow {
   text-transform: uppercase;
   letter-spacing: 0.14em;
-  font-size: 0.75rem;
+  font-size: 0.6rem;
   color: var(--moss);
-  margin-bottom: 12px;
+  margin-bottom: 4px;
 }
 
 h1, h2 {
   font-family: 'Fraunces', serif;
-  margin: 0 0 12px;
+  margin: 0 0 6px;
 }
 
 h1 {
-  font-size: clamp(2.2rem, 3vw, 3.4rem);
+  font-size: clamp(1.6rem, 2.4vw, 2.4rem);
 }
 
 .lede {
-  font-size: 1.05rem;
+  font-size: 0.9rem;
   color: var(--muted);
   max-width: 480px;
 }
@@ -381,12 +381,8 @@ input[type="number"] {
     margin-bottom: 0;
   }
 
-  .compact-text {
-    margin-bottom: 6px;
-  }
-
   h1 {
-    font-size: clamp(1.3rem, 6vw, 1.8rem);
+    font-size: clamp(1.2rem, 6vw, 1.5rem);
   }
 
   .panel {
@@ -395,11 +391,11 @@ input[type="number"] {
   }
 
   .eyebrow {
-    font-size: 0.6rem;
+    font-size: 0.55rem;
   }
 
   .lede {
-    font-size: 0.85rem;
+    font-size: 0.75rem;
   }
 
   .faction-grid {
