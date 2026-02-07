@@ -24,7 +24,7 @@ body {
   color: var(--ink);
   background: radial-gradient(circle at top left, #fff1d3 0%, #f3dcc8 35%, #ead0b5 60%, #d8c1a8 100%);
   min-height: 100vh;
-  overflow: hidden;
+  overflow: auto;
 }
 
 .page {
