@@ -24,20 +24,26 @@ body {
   color: var(--ink);
   background: radial-gradient(circle at top left, #fff1d3 0%, #f3dcc8 35%, #ead0b5 60%, #d8c1a8 100%);
   min-height: 100vh;
+  overflow: hidden;
 }
 
 .page {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 32px 24px 48px;
+  padding: 24px;
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 18px;
 }
 
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
-  gap: 24px;
-  align-items: stretch;
-  margin-bottom: 32px;
+  gap: 12px;
+}
+
+.hero.compact {
+  margin-bottom: 4px;
 }
 
 .eyebrow {
@@ -61,29 +67,6 @@ h1 {
   font-size: 1.05rem;
   color: var(--muted);
   max-width: 480px;
-}
-
-.hero-card {
-  background: var(--cream);
-  border-radius: 20px;
-  padding: 20px;
-  box-shadow: var(--shadow);
-  display: grid;
-  gap: 12px;
-}
-
-.hero-stat {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: var(--sand);
-  border-radius: 14px;
-  padding: 12px 16px;
-  font-weight: 600;
-}
-
-.hero-stat strong {
-  font-size: 1.5rem;
 }
 
 .primary,
@@ -122,10 +105,14 @@ h1 {
   color: var(--muted);
 }
 
-.grid {
+.view {
   display: grid;
-  gap: 24px;
+  gap: 18px;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.hidden {
+  display: none;
 }
 
 .panel {
@@ -145,6 +132,12 @@ h1 {
   flex-wrap: wrap;
 }
 
+.actions-panel {
+  align-content: center;
+  justify-items: start;
+  gap: 12px;
+}
+
 .panel-actions {
   display: flex;
   gap: 8px;
@@ -153,6 +146,14 @@ h1 {
 .field-row {
   display: grid;
   gap: 8px;
+}
+
+.pager {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: var(--muted);
 }
 
 input[type="text"],
@@ -175,11 +176,15 @@ input[type="number"] {
   gap: 12px;
 }
 
+.faction-grid.compact {
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+}
+
 .faction-card {
   border-radius: 16px;
   background: #fff;
   border: 1px solid rgba(28, 27, 26, 0.08);
-  padding: 12px;
+  padding: 10px;
   display: grid;
   gap: 8px;
   position: relative;
@@ -187,14 +192,14 @@ input[type="number"] {
 
 .faction-card input {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 10px;
+  right: 10px;
   transform: scale(1.1);
 }
 
 .faction-card img {
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
 }
 
 .faction-meta {
@@ -222,15 +227,9 @@ input[type="number"] {
   background: #fff;
   border-radius: 14px;
   padding: 16px;
-  border: 1px dashed rgba(28, 27, 26, 0.2);
+  border: 1px solid rgba(28, 27, 26, 0.1);
   display: grid;
-  gap: 12px;
-}
-
-.results.empty {
-  place-items: center;
-  text-align: center;
-  color: var(--muted);
+  gap: 10px;
 }
 
 .result-list {
@@ -242,30 +241,25 @@ input[type="number"] {
   background: var(--sand);
   border-radius: 12px;
   padding: 10px 12px;
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 40px 1fr;
   align-items: center;
   gap: 8px;
-  flex-wrap: wrap;
 }
 
-.turn-order {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.turn-chip {
+.order-pill {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
   background: rgba(47, 124, 140, 0.15);
   color: var(--teal);
-  padding: 6px 12px;
-  border-radius: 999px;
-  font-size: 0.85rem;
+  font-weight: 600;
 }
 
-.result-actions {
-  display: flex;
-  gap: 12px;
+.results-panel {
+  gap: 16px;
 }
 
 .footer {
@@ -276,7 +270,26 @@ input[type="number"] {
 }
 
 @media (max-width: 880px) {
-  .hero {
-    grid-template-columns: 1fr;
+  .page {
+    padding: 20px;
+  }
+}
+
+@media (max-height: 720px) {
+  .page {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .panel {
+    padding: 16px;
+  }
+
+  h1 {
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+  }
+
+  .lede {
+    font-size: 0.95rem;
   }
 }

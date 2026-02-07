@@ -8,28 +8,15 @@
 </head>
 <body>
   <div class="page">
-    <header class="hero">
+    <header class="hero compact">
       <div>
         <p class="eyebrow">Lord of Root / Root Table Helper</p>
         <h1>Faction + Turn Order Randomizer</h1>
-        <p class="lede">Pick the factions you want in the pool, add players, and roll up a balanced start in seconds.</p>
-      </div>
-      <div class="hero-card">
-        <div class="hero-stat">
-          <span>Ready Players</span>
-          <strong id="playerCountDisplay">4</strong>
-        </div>
-        <div class="hero-stat">
-          <span>Factions in Pool</span>
-          <strong id="factionCountDisplay">4</strong>
-        </div>
-        <button id="randomizeBtn" class="primary">Randomize Match</button>
-        <button id="resetBtn" class="ghost">Reset Picks</button>
-        <p class="hint" id="statusHint">Select at least as many factions as players.</p>
+        <p class="lede">Pick factions, enter players, then roll a clean start without scrolling.</p>
       </div>
     </header>
 
-    <main class="grid">
+    <main class="view" id="settingsView">
       <section class="panel">
         <h2>Players</h2>
         <div class="field-row">
@@ -52,18 +39,32 @@
           <label for="factionSearch">Filter</label>
           <input id="factionSearch" type="text" placeholder="Type to filter factions" />
         </div>
-        <div id="factionList" class="faction-grid"></div>
+        <div class="pager">
+          <button id="prevPage" class="chip">Prev</button>
+          <span id="pageIndicator">Page 1</span>
+          <button id="nextPage" class="chip">Next</button>
+        </div>
+        <div id="factionList" class="faction-grid compact"></div>
       </section>
 
-      <section class="panel">
-        <h2>Results</h2>
-        <div id="results" class="results empty">
-          <p>Randomize to generate assignments and turn order.</p>
+      <section class="panel actions-panel">
+        <button id="randomizeBtn" class="primary">Randomize Match</button>
+        <button id="resetBtn" class="ghost">Reset Picks</button>
+        <p class="hint" id="statusHint">Select at least as many factions as players.</p>
+      </section>
+    </main>
+
+    <main class="view hidden" id="resultsView">
+      <section class="panel results-panel">
+        <div class="panel-header">
+          <h2>Results</h2>
+          <div class="panel-actions">
+            <button id="rerollBtn" class="chip">Reroll</button>
+            <button id="copyBtn" class="chip">Copy</button>
+          </div>
         </div>
-        <div class="result-actions">
-          <button id="rerollBtn" class="primary">Reroll</button>
-          <button id="copyBtn" class="ghost">Copy Results</button>
-        </div>
+        <div id="results" class="results"></div>
+        <button id="backBtn" class="ghost">Back to settings</button>
       </section>
     </main>
 

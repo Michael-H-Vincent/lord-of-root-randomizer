@@ -66,9 +66,9 @@ const playerInputs = document.getElementById('playerInputs');
 const factionList = document.getElementById('factionList');
 const factionSearch = document.getElementById('factionSearch');
 const statusHint = document.getElementById('statusHint');
-const playerCountDisplay = document.getElementById('playerCountDisplay');
-const factionCountDisplay = document.getElementById('factionCountDisplay');
 const resultsContainer = document.getElementById('results');
+const settingsView = document.getElementById('settingsView');
+const resultsView = document.getElementById('resultsView');
 
 const randomizeBtn = document.getElementById('randomizeBtn');
 const rerollBtn = document.getElementById('rerollBtn');
@@ -77,18 +77,23 @@ const resetBtn = document.getElementById('resetBtn');
 const selectBaseBtn = document.getElementById('selectBase');
 const selectAllBtn = document.getElementById('selectAll');
 const clearAllBtn = document.getElementById('clearAll');
+const backBtn = document.getElementById('backBtn');
+const prevPageBtn = document.getElementById('prevPage');
+const nextPageBtn = document.getElementById('nextPage');
+const pageIndicator = document.getElementById('pageIndicator');
 
 const state = {
   selected: new Set(factions.filter((f) => f.set === 'Base Game').map((f) => f.id)),
   players: 4,
   names: Array.from({ length: 4 }, (_, i) => `Player ${i + 1}`),
-  lastResult: null
+  lastResult: null,
+  page: 0,
+  pageSize: 8
 };
 
 function updatePlayerInputs() {
   const count = Number(playerCountInput.value) || 1;
   state.players = count;
-  playerCountDisplay.textContent = count;
 
   if (state.names.length < count) {
     for (let i = state.names.length; i < count; i += 1) {
@@ -131,7 +136,21 @@ function renderFactions() {
     faction.name.toLowerCase().includes(term) || faction.set.toLowerCase().includes(term)
   );
 
-  filtered.forEach((faction) => {
+  const totalPages = Math.max(1, Math.ceil(filtered.length / state.pageSize));
+  if (state.page >= totalPages) {
+    state.page = totalPages - 1;
+  }
+  if (state.page < 0) {
+    state.page = 0;
+  }
+  const start = state.page * state.pageSize;
+  const pageItems = filtered.slice(start, start + state.pageSize);
+
+  pageIndicator.textContent = `Page ${state.page + 1} of ${totalPages}`;
+  prevPageBtn.disabled = state.page === 0;
+  nextPageBtn.disabled = state.page >= totalPages - 1;
+
+  pageItems.forEach((faction) => {
     const card = document.createElement('label');
     card.className = 'faction-card';
 
@@ -179,7 +198,6 @@ function renderFactions() {
 }
 
 function updateCounts() {
-  factionCountDisplay.textContent = state.selected.size;
 }
 
 function validateSelection() {
@@ -221,11 +239,12 @@ function randomize() {
 
   state.lastResult = { assignments, playerOrder };
   renderResults();
+  showResults();
 }
 
 function renderResults() {
   if (!state.lastResult) {
-    resultsContainer.className = 'results empty';
+    resultsContainer.className = 'results';
     resultsContainer.innerHTML = '<p>Randomize to generate assignments and turn order.</p>';
     return;
   }
@@ -236,37 +255,37 @@ function renderResults() {
   const assignmentList = document.createElement('div');
   assignmentList.className = 'result-list';
 
-  assignments.forEach((item) => {
+  const orderedAssignments = playerOrder.map((player) =>
+    assignments.find((item) => item.player === player)
+  );
+
+  orderedAssignments.forEach((item, index) => {
+    if (!item) {
+      return;
+    }
     const row = document.createElement('div');
     row.className = 'result-item';
 
-    const left = document.createElement('strong');
-    left.textContent = item.player;
+    const order = document.createElement('span');
+    order.className = 'order-pill';
+    order.textContent = `${index + 1}`;
 
-    const right = document.createElement('span');
-    right.textContent = item.faction.name;
+    const right = document.createElement('div');
+    const playerName = document.createElement('strong');
+    playerName.textContent = item.player;
+    const factionName = document.createElement('span');
+    factionName.textContent = item.faction.name;
+    right.appendChild(playerName);
+    right.appendChild(document.createElement('br'));
+    right.appendChild(factionName);
 
-    row.appendChild(left);
+    row.appendChild(order);
     row.appendChild(right);
     assignmentList.appendChild(row);
   });
 
-  const turnLabel = document.createElement('strong');
-  turnLabel.textContent = 'Turn Order';
-
-  const turnRow = document.createElement('div');
-  turnRow.className = 'turn-order';
-  playerOrder.forEach((player) => {
-    const chip = document.createElement('span');
-    chip.className = 'turn-chip';
-    chip.textContent = player;
-    turnRow.appendChild(chip);
-  });
-
   resultsContainer.innerHTML = '';
   resultsContainer.appendChild(assignmentList);
-  resultsContainer.appendChild(turnLabel);
-  resultsContainer.appendChild(turnRow);
 }
 
 function copyResults() {
@@ -297,14 +316,36 @@ function resetSelections() {
   validateSelection();
 }
 
+function showResults() {
+  settingsView.classList.add('hidden');
+  resultsView.classList.remove('hidden');
+}
+
+function showSettings() {
+  resultsView.classList.add('hidden');
+  settingsView.classList.remove('hidden');
+}
+
 playerCountInput.addEventListener('change', updatePlayerInputs);
 playerCountInput.addEventListener('input', updatePlayerInputs);
 
-factionSearch.addEventListener('input', renderFactions);
+factionSearch.addEventListener('input', () => {
+  state.page = 0;
+  renderFactions();
+});
 randomizeBtn.addEventListener('click', randomize);
 rerollBtn.addEventListener('click', randomize);
 copyBtn.addEventListener('click', copyResults);
 resetBtn.addEventListener('click', resetSelections);
+backBtn.addEventListener('click', showSettings);
+prevPageBtn.addEventListener('click', () => {
+  state.page -= 1;
+  renderFactions();
+});
+nextPageBtn.addEventListener('click', () => {
+  state.page += 1;
+  renderFactions();
+});
 selectBaseBtn.addEventListener('click', () => {
   state.selected = new Set(factions.filter((f) => f.set === 'Base Game').map((f) => f.id));
   updateCounts();
