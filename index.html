@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Root Table Randomizer</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Lord of Root / Root Table Helper</p>
+        <h1>Faction + Turn Order Randomizer</h1>
+        <p class="lede">Pick the factions you want in the pool, add players, and roll up a balanced start in seconds.</p>
+      </div>
+      <div class="hero-card">
+        <div class="hero-stat">
+          <span>Ready Players</span>
+          <strong id="playerCountDisplay">4</strong>
+        </div>
+        <div class="hero-stat">
+          <span>Factions in Pool</span>
+          <strong id="factionCountDisplay">4</strong>
+        </div>
+        <button id="randomizeBtn" class="primary">Randomize Match</button>
+        <button id="resetBtn" class="ghost">Reset Picks</button>
+        <p class="hint" id="statusHint">Select at least as many factions as players.</p>
+      </div>
+    </header>
+
+    <main class="grid">
+      <section class="panel">
+        <h2>Players</h2>
+        <div class="field-row">
+          <label for="playerCount">Number of players</label>
+          <input id="playerCount" type="number" min="1" max="8" value="4" />
+        </div>
+        <div id="playerInputs" class="stack"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <h2>Factions</h2>
+          <div class="panel-actions">
+            <button id="selectBase" class="chip">Select Base</button>
+            <button id="selectAll" class="chip">Select All</button>
+            <button id="clearAll" class="chip">Clear</button>
+          </div>
+        </div>
+        <div class="field-row">
+          <label for="factionSearch">Filter</label>
+          <input id="factionSearch" type="text" placeholder="Type to filter factions" />
+        </div>
+        <div id="factionList" class="faction-grid"></div>
+      </section>
+
+      <section class="panel">
+        <h2>Results</h2>
+        <div id="results" class="results empty">
+          <p>Randomize to generate assignments and turn order.</p>
+        </div>
+        <div class="result-actions">
+          <button id="rerollBtn" class="primary">Reroll</button>
+          <button id="copyBtn" class="ghost">Copy Results</button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>Not affiliated with Leder Games. Fan-made helper tool.</p>
+    </footer>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
