@@ -18,11 +18,14 @@
 
     <main class="view" id="settingsView">
       <div class="settings-bar">
-        <div class="settings-tabs">
-        <button id="tabPlayers" class="chip active">Players</button>
-        <button id="tabFactions" class="chip">Factions</button>
+        <div class="status-slot" id="statusHintSlot"></div>
+        <div class="settings-row">
+          <div class="settings-tabs">
+            <button id="tabPlayers" class="chip active">Players</button>
+            <button id="tabFactions" class="chip">Factions</button>
+          </div>
+          <div class="settings-actions" id="settingsActions"></div>
         </div>
-        <div class="settings-actions" id="settingsActions"></div>
       </div>
       <section class="panel" data-step="players">
         <div class="panel-header">

@@ -122,6 +122,11 @@ h1 {
 
 .settings-bar {
   display: none;
+  gap: 6px;
+}
+
+.settings-row {
+  display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
@@ -328,6 +333,7 @@ input[type="number"] {
 
   .settings-bar {
     display: flex;
+    flex-direction: column;
   }
 
   .settings-tabs {
@@ -339,6 +345,11 @@ input[type="number"] {
     justify-items: end;
     gap: 4px;
     text-align: right;
+  }
+
+  .status-slot .hint {
+    font-size: 0.7rem;
+    margin: 0;
   }
 
   #settingsView .actions-panel {
@@ -396,11 +407,11 @@ input[type="number"] {
 @media (max-width: 520px) {
   .page {
     padding: 16px;
-    gap: 12px;
+    gap: 8px;
   }
 
   .hero.compact {
-    margin-bottom: 0;
+    margin-bottom: -2px;
   }
 
   h1 {
@@ -418,6 +429,7 @@ input[type="number"] {
 
   .lede {
     font-size: 0.75rem;
+    margin: 0;
   }
 
   .faction-grid {

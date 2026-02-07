@@ -81,6 +81,7 @@ const backBtn = document.getElementById('backBtn');
 const tabPlayersBtn = document.getElementById('tabPlayers');
 const tabFactionsBtn = document.getElementById('tabFactions');
 const settingsActions = document.getElementById('settingsActions');
+const statusHintSlot = document.getElementById('statusHintSlot');
 const actionsPanel = document.querySelector('.actions-panel');
 
 const state = {
@@ -339,8 +340,12 @@ function syncMobileActions() {
   if (isMobile) {
     if (settingsActions && randomizeBtn.parentElement !== settingsActions) {
       settingsActions.appendChild(randomizeBtn);
-      settingsActions.appendChild(statusHint);
     }
+    if (statusHintSlot && statusHint.parentElement !== statusHintSlot) {
+      statusHintSlot.appendChild(statusHint);
+    }
+    randomizeBtn.classList.remove('primary');
+    randomizeBtn.classList.add('chip');
     if (resetBtn) {
       resetBtn.style.display = 'none';
     }
@@ -349,6 +354,8 @@ function syncMobileActions() {
       actionsPanel.insertBefore(randomizeBtn, actionsPanel.firstChild);
       actionsPanel.appendChild(statusHint);
     }
+    randomizeBtn.classList.remove('chip');
+    randomizeBtn.classList.add('primary');
     if (resetBtn) {
       resetBtn.style.display = '';
     }
