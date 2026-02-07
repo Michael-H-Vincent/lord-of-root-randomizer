@@ -18,6 +18,10 @@
   box-sizing: border-box;
 }
 
+html, body {
+  height: auto;
+}
+
 body {
   margin: 0;
   font-family: 'Space Grotesk', system-ui, sans-serif;
@@ -33,7 +37,7 @@ body {
   padding: 24px;
   min-height: 100vh;
   display: grid;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: auto auto auto;
   gap: 18px;
 }
 
@@ -213,6 +217,7 @@ input[type="number"] {
   object-fit: contain;
   image-rendering: auto;
   filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.08));
+  border-radius: 12px;
 }
 
 .faction-meta {
@@ -294,6 +299,21 @@ input[type="number"] {
   #settingsView[data-step="players"] [data-step="factions"],
   #settingsView[data-step="factions"] [data-step="players"] {
     display: none;
+  }
+}
+
+@media (min-width: 900px) {
+  .view {
+    grid-template-columns: 1.1fr 1.5fr 0.8fr;
+    align-items: start;
+  }
+
+  .actions-panel {
+    align-content: start;
+  }
+
+  .faction-grid {
+    grid-template-columns: repeat(2, minmax(180px, 1fr));
   }
 }
 

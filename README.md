@@ -14,6 +14,15 @@ A lightweight, static web app for randomizing factions and turn order when playi
 ### Local
 Open `index.html` in a browser. No build step required.
 
+### Local Dev Server
+Run a simple static server so you can test on other devices:
+
+```bash
+python3 -m http.server 8080
+```
+
+Then visit `http://localhost:8080`.
+
 ### GitHub Pages
 1. Push this repo to GitHub.
 2. In your GitHub repo settings, open `Pages`.
@@ -31,4 +40,3 @@ To add or edit factions, update the list in `js/app.js`. Each faction needs:
 
 ## Notes
 This project is fan-made and not affiliated with Leder Games. Please add your own faction icons if you want official art.
-
