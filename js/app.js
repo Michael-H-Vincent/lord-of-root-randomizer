@@ -154,26 +154,37 @@ const actionsPanel = document.querySelector('.actions-panel');
 const adPlayersScreen = document.getElementById('adPlayersScreen');
 const adFactionsScreen = document.getElementById('adFactionsScreen');
 const adDraftScreen = document.getElementById('adDraftScreen');
+const adPlayersEntryStage = document.getElementById('adPlayersEntryStage');
+const adPlayersOrderStage = document.getElementById('adPlayersOrderStage');
 const adPlayerCount = document.getElementById('adPlayerCount');
 const adPlayerInputs = document.getElementById('adPlayerInputs');
 const adRollOrderBtn = document.getElementById('adRollOrderBtn');
 const adTurnOrder = document.getElementById('adTurnOrder');
+const adBackToPlayerEntryBtn = document.getElementById('adBackToPlayerEntryBtn');
+const adRegenOrderBtn = document.getElementById('adRegenOrderBtn');
 const adToFactionsBtn = document.getElementById('adToFactionsBtn');
 const adResetFromPlayersBtn = document.getElementById('adResetFromPlayersBtn');
+const adResetFromPlayersOrderBtn = document.getElementById('adResetFromPlayersOrderBtn');
 const adFactionList = document.getElementById('adFactionList');
 const adSelectAllBtn = document.getElementById('adSelectAllBtn');
 const adClearAllBtn = document.getElementById('adClearAllBtn');
 const adBackToPlayersBtn = document.getElementById('adBackToPlayersBtn');
 const adToDraftBtn = document.getElementById('adToDraftBtn');
 const adResetFromFactionsBtn = document.getElementById('adResetFromFactionsBtn');
+const adDraftPickStage = document.getElementById('adDraftPickStage');
+const adDraftCardStage = document.getElementById('adDraftCardStage');
 const adCurrentPicker = document.getElementById('adCurrentPicker');
 const adDraftStatus = document.getElementById('adDraftStatus');
 const adDraftChoices = document.getElementById('adDraftChoices');
+const adNextToCardBtn = document.getElementById('adNextToCardBtn');
+const adCardStageTitle = document.getElementById('adCardStageTitle');
 const adSetupCardWrap = document.getElementById('adSetupCardWrap');
 const adSetupCardImage = document.getElementById('adSetupCardImage');
 const adPrevPickBtn = document.getElementById('adPrevPickBtn');
+const adPrevFromCardBtn = document.getElementById('adPrevFromCardBtn');
 const adCompletePickBtn = document.getElementById('adCompletePickBtn');
 const adResetFromDraftBtn = document.getElementById('adResetFromDraftBtn');
+const adResetFromCardStageBtn = document.getElementById('adResetFromCardStageBtn');
 const adFinalAssignments = document.getElementById('adFinalAssignments');
 
 const state = {
@@ -194,7 +205,9 @@ const state = {
     draftPool: [],
     delayedCardId: null,
     picks: [],
-    pendingCardId: null
+    pendingCardId: null,
+    playersStage: 'entry',
+    draftStage: 'pick'
   }
 };
 
@@ -451,6 +464,18 @@ function setAdScreen(screenId) {
   adDraftScreen.classList.toggle('hidden', screenId !== 'draft');
 }
 
+function setAdPlayersStage(stage) {
+  state.advanced.playersStage = stage;
+  adPlayersEntryStage.classList.toggle('hidden', stage !== 'entry');
+  adPlayersOrderStage.classList.toggle('hidden', stage !== 'order');
+}
+
+function setAdDraftStage(stage) {
+  state.advanced.draftStage = stage;
+  adDraftPickStage.classList.toggle('hidden', stage !== 'pick');
+  adDraftCardStage.classList.toggle('hidden', stage !== 'card');
+}
+
 function sanitizeAdvancedNames() {
   state.advanced.names = state.advanced.names.map((name, index) => name.trim() || `Player ${index + 1}`);
 }
@@ -521,6 +546,7 @@ function generateAdvancedOrder() {
   state.advanced.turnOrder = shuffle(state.advanced.names);
   state.advanced.draftOrder = [...state.advanced.turnOrder].reverse();
   renderAdvancedTurnOrder();
+  setAdPlayersStage('order');
 }
 
 function renderAdvancedFactionList() {
@@ -654,16 +680,20 @@ function renderAdvancedDraft() {
   if (finished) {
     adCurrentPicker.textContent = 'Advanced Setup Complete';
     adDraftStatus.textContent = 'All players have selected factions.';
-    adCompletePickBtn.disabled = true;
+    adNextToCardBtn.disabled = true;
     adDraftChoices.innerHTML = '';
-    adSetupCardWrap.classList.add('hidden');
+    setAdDraftStage('pick');
     renderAdvancedFinalAssignments();
     return;
   }
 
+  if (state.advanced.draftStage === 'card' && !state.advanced.pendingCardId) {
+    setAdDraftStage('pick');
+  }
+
   adCurrentPicker.textContent = `${state.advanced.draftOrder[pickIndex]} choosing`;
   adDraftStatus.textContent = `Pick ${pickIndex + 1} of ${state.advanced.players}`;
-  adCompletePickBtn.disabled = !state.advanced.pendingCardId;
+  adNextToCardBtn.disabled = !state.advanced.pendingCardId;
   adFinalAssignments.classList.add('hidden');
   adFinalAssignments.innerHTML = '';
 
@@ -691,9 +721,6 @@ function renderAdvancedDraft() {
     action.disabled = !availability.available;
     action.addEventListener('click', () => {
       state.advanced.pendingCardId = card.id;
-      adSetupCardImage.src = card.setupCard;
-      adSetupCardImage.alt = `${card.name} setup card`;
-      adSetupCardWrap.classList.remove('hidden');
       renderAdvancedDraft();
     });
 
@@ -703,8 +730,11 @@ function renderAdvancedDraft() {
     adDraftChoices.appendChild(row);
   });
 
-  if (!state.advanced.pendingCardId) {
-    adSetupCardWrap.classList.add('hidden');
+  if (state.advanced.pendingCardId) {
+    const chosen = advancedById[state.advanced.pendingCardId];
+    adCardStageTitle.textContent = `${chosen.name} Setup Card`;
+    adSetupCardImage.src = chosen.setupCard;
+    adSetupCardImage.alt = `${chosen.name} setup card`;
   }
 }
 
@@ -718,11 +748,15 @@ function resetAdvancedToStart() {
   state.advanced.delayedCardId = null;
   state.advanced.picks = [];
   state.advanced.pendingCardId = null;
+  state.advanced.playersStage = 'entry';
+  state.advanced.draftStage = 'pick';
 
   adPlayerCount.value = '4';
   updateAdvancedPlayerInputs();
   renderAdvancedTurnOrder();
   renderAdvancedFactionList();
+  setAdPlayersStage('entry');
+  setAdDraftStage('pick');
   setAdScreen('players');
 }
 
@@ -736,6 +770,7 @@ function initAdvancedDraft() {
   state.advanced.draftPool = draftPool;
   state.advanced.picks = [];
   state.advanced.pendingCardId = null;
+  setAdDraftStage('pick');
   setAdScreen('draft');
   renderAdvancedDraft();
 }
@@ -748,13 +783,13 @@ function completeAdvancedPick() {
   const player = state.advanced.draftOrder[state.advanced.picks.length];
   state.advanced.picks.push({ player, cardId: state.advanced.pendingCardId });
   state.advanced.pendingCardId = null;
+  setAdDraftStage('pick');
   renderAdvancedDraft();
 }
 
 function undoAdvancedPick() {
   if (state.advanced.pendingCardId) {
     state.advanced.pendingCardId = null;
-    adSetupCardWrap.classList.add('hidden');
     renderAdvancedDraft();
     return;
   }
@@ -802,6 +837,8 @@ clearAllBtn.addEventListener('click', () => {
 
 adPlayerCount.addEventListener('input', updateAdvancedPlayerInputs);
 adRollOrderBtn.addEventListener('click', generateAdvancedOrder);
+adRegenOrderBtn.addEventListener('click', generateAdvancedOrder);
+adBackToPlayerEntryBtn.addEventListener('click', () => setAdPlayersStage('entry'));
 adToFactionsBtn.addEventListener('click', () => {
   if (!canMoveToAdvancedFactions()) {
     adTurnOrder.innerHTML = `<p>Generate a ${state.advanced.players}-player turn order first.</p>`;
@@ -810,6 +847,7 @@ adToFactionsBtn.addEventListener('click', () => {
   setAdScreen('factions');
 });
 adResetFromPlayersBtn.addEventListener('click', resetAdvancedToStart);
+adResetFromPlayersOrderBtn.addEventListener('click', resetAdvancedToStart);
 
 adSelectAllBtn.addEventListener('click', () => {
   state.advanced.selectedCards = new Set(advancedCards.map((card) => card.id));
@@ -821,13 +859,28 @@ adClearAllBtn.addEventListener('click', () => {
   renderAdvancedFactionList();
 });
 
-adBackToPlayersBtn.addEventListener('click', () => setAdScreen('players'));
+adBackToPlayersBtn.addEventListener('click', () => {
+  setAdScreen('players');
+  setAdPlayersStage(state.advanced.turnOrder.length ? 'order' : 'entry');
+});
 adToDraftBtn.addEventListener('click', initAdvancedDraft);
 adResetFromFactionsBtn.addEventListener('click', resetAdvancedToStart);
 
 adPrevPickBtn.addEventListener('click', undoAdvancedPick);
+adNextToCardBtn.addEventListener('click', () => {
+  if (!state.advanced.pendingCardId) {
+    return;
+  }
+  setAdDraftStage('card');
+  renderAdvancedDraft();
+});
+adPrevFromCardBtn.addEventListener('click', () => {
+  setAdDraftStage('pick');
+  renderAdvancedDraft();
+});
 adCompletePickBtn.addEventListener('click', completeAdvancedPick);
 adResetFromDraftBtn.addEventListener('click', resetAdvancedToStart);
+adResetFromCardStageBtn.addEventListener('click', resetAdvancedToStart);
 
 window.addEventListener('resize', syncQuickMobileActions);
 

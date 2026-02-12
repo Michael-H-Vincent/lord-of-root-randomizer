@@ -184,6 +184,10 @@ h1 {
   gap: 8px;
 }
 
+#advancedModeView .panel-actions {
+  margin-top: 10px;
+}
+
 .inline-field {
   display: grid;
   grid-auto-flow: column;

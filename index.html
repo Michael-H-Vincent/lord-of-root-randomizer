@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Root Table Randomizer</title>
-  <link rel="stylesheet" href="css/styles.css?v=20260212-1" />
+  <link rel="stylesheet" href="css/styles.css?v=20260212-2" />
 </head>
 <body>
   <div class="page">
@@ -84,21 +84,32 @@
     <main class="mode-view hidden" id="advancedModeView">
       <section class="view" id="adPlayersScreen">
         <section class="panel">
-          <div class="panel-header">
-            <h2>Advanced Setup: Players</h2>
-            <div class="inline-field">
-              <label for="adPlayerCount">Players</label>
-              <input id="adPlayerCount" type="number" min="2" max="8" value="4" />
+          <div id="adPlayersEntryStage">
+            <div class="panel-header">
+              <h2>Advanced Setup: Players</h2>
+              <div class="inline-field">
+                <label for="adPlayerCount">Players</label>
+                <input id="adPlayerCount" type="number" min="2" max="8" value="4" />
+              </div>
+            </div>
+            <div id="adPlayerInputs" class="stack"></div>
+            <div class="panel-actions">
+              <button id="adRollOrderBtn" class="primary">Generate Turn Order</button>
+              <button id="adResetFromPlayersBtn" class="ghost">Reset</button>
             </div>
           </div>
-          <div id="adPlayerInputs" class="stack"></div>
-          <div class="panel-actions">
-            <button id="adRollOrderBtn" class="primary">Generate Turn Order</button>
-          </div>
-          <div id="adTurnOrder" class="results compact-results"></div>
-          <div class="panel-actions">
-            <button id="adToFactionsBtn" class="primary">Next</button>
-            <button id="adResetFromPlayersBtn" class="ghost">Reset</button>
+
+          <div id="adPlayersOrderStage" class="hidden">
+            <div class="panel-header">
+              <h2>Advanced Setup: Turn Order</h2>
+            </div>
+            <div id="adTurnOrder" class="results compact-results"></div>
+            <div class="panel-actions">
+              <button id="adBackToPlayerEntryBtn" class="ghost">Prev</button>
+              <button id="adRegenOrderBtn" class="chip">Regenerate</button>
+              <button id="adToFactionsBtn" class="primary">Next</button>
+              <button id="adResetFromPlayersOrderBtn" class="ghost">Reset</button>
+            </div>
           </div>
         </section>
       </section>
@@ -124,20 +135,34 @@
 
       <section class="view hidden" id="adDraftScreen">
         <section class="panel">
-          <div class="panel-header">
-            <h2 id="adCurrentPicker">Current Picker</h2>
-            <p class="hint" id="adDraftStatus"></p>
+          <div id="adDraftPickStage">
+            <div class="panel-header">
+              <h2 id="adCurrentPicker">Current Picker</h2>
+              <p class="hint" id="adDraftStatus"></p>
+            </div>
+            <div id="adDraftChoices" class="draft-choices"></div>
+            <div class="panel-actions">
+              <button id="adPrevPickBtn" class="ghost">Prev</button>
+              <button id="adNextToCardBtn" class="primary">Next</button>
+              <button id="adResetFromDraftBtn" class="ghost">Reset</button>
+            </div>
           </div>
-          <div id="adDraftChoices" class="draft-choices"></div>
-          <div id="adSetupCardWrap" class="setup-card-wrap hidden">
-            <h3>Setup Card</h3>
-            <img id="adSetupCardImage" class="setup-card-image" alt="Selected setup card" />
+
+          <div id="adDraftCardStage" class="hidden">
+            <div class="panel-header">
+              <h2 id="adCardStageTitle">Setup Card</h2>
+              <p class="hint">Follow setup card, then continue.</p>
+            </div>
+            <div id="adSetupCardWrap" class="setup-card-wrap">
+              <img id="adSetupCardImage" class="setup-card-image" alt="Selected setup card" />
+            </div>
+            <div class="panel-actions">
+              <button id="adPrevFromCardBtn" class="ghost">Prev</button>
+              <button id="adCompletePickBtn" class="primary">Next</button>
+              <button id="adResetFromCardStageBtn" class="ghost">Reset</button>
+            </div>
           </div>
-          <div class="panel-actions">
-            <button id="adPrevPickBtn" class="ghost">Prev</button>
-            <button id="adCompletePickBtn" class="primary">Next</button>
-            <button id="adResetFromDraftBtn" class="ghost">Reset</button>
-          </div>
+
           <div id="adFinalAssignments" class="results compact-results hidden"></div>
         </section>
       </section>
@@ -148,6 +173,6 @@
     </footer>
   </div>
 
-  <script src="js/app.js?v=20260212-1"></script>
+  <script src="js/app.js?v=20260212-2"></script>
 </body>
 </html>
