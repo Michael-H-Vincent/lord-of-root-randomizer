@@ -1,65 +1,132 @@
-const factions = [
+const quickFactions = [
+  { id: 'marquise', name: 'Marquise de Cat', set: 'Base Game', icon: 'assets/icons/marquise.png' },
+  { id: 'eyrie', name: 'Eyrie Dynasties', set: 'Base Game', icon: 'assets/icons/eyrie.png' },
+  { id: 'alliance', name: 'Woodland Alliance', set: 'Base Game', icon: 'assets/icons/alliance.png' },
+  { id: 'vagabond', name: 'Vagabond', set: 'Base Game', icon: 'assets/icons/vagabond.png' },
+  { id: 'riverfolk', name: 'Riverfolk Company', set: 'Riverfolk Expansion', icon: 'assets/icons/riverfolk.png' },
+  { id: 'lizards', name: 'Lizard Cult', set: 'Riverfolk Expansion', icon: 'assets/icons/lizards.png' },
+  { id: 'duchy', name: 'Underground Duchy', set: 'Underworld Expansion', icon: 'assets/icons/duchy.png' },
+  { id: 'corvid', name: 'Corvid Conspiracy', set: 'Underworld Expansion', icon: 'assets/icons/corvid.png' },
+  { id: 'hundreds', name: 'Lord of the Hundreds', set: 'Marauder Expansion', icon: 'assets/icons/hundreds.png' },
+  { id: 'keepers', name: 'Keepers in Iron', set: 'Marauder Expansion', icon: 'assets/icons/keepers.png' }
+];
+
+const advancedCards = [
   {
     id: 'marquise',
+    templateId: 'marquise',
     name: 'Marquise de Cat',
     set: 'Base Game',
-    icon: 'assets/icons/marquise.png'
+    icon: 'assets/icons/marquise.png',
+    setupCard: 'assets/setup_cards/marquise_setup.png',
+    militant: true
   },
   {
     id: 'eyrie',
+    templateId: 'eyrie',
     name: 'Eyrie Dynasties',
     set: 'Base Game',
-    icon: 'assets/icons/eyrie.png'
+    icon: 'assets/icons/eyrie.png',
+    setupCard: 'assets/setup_cards/eyrie_setup.png',
+    militant: true
   },
   {
     id: 'alliance',
+    templateId: 'alliance',
     name: 'Woodland Alliance',
     set: 'Base Game',
-    icon: 'assets/icons/alliance.png'
+    icon: 'assets/icons/alliance.png',
+    setupCard: 'assets/setup_cards/alliance_setup.png',
+    militant: false,
+    insurgent: true
   },
   {
-    id: 'vagabond',
-    name: 'Vagabond',
+    id: 'vagabond-a',
+    templateId: 'vagabond',
+    name: 'Vagabond I',
     set: 'Base Game',
-    icon: 'assets/icons/vagabond.png'
+    icon: 'assets/icons/vagabond.png',
+    setupCard: 'assets/setup_cards/vagabond_setup.png',
+    militant: false,
+    insurgent: true,
+    vagabondSlot: 1
+  },
+  {
+    id: 'vagabond-b',
+    templateId: 'vagabond',
+    name: 'Vagabond II',
+    set: 'Base Game',
+    icon: 'assets/icons/vagabond.png',
+    setupCard: 'assets/setup_cards/vagabond_setup.png',
+    militant: false,
+    insurgent: true,
+    vagabondSlot: 2
   },
   {
     id: 'riverfolk',
+    templateId: 'riverfolk',
     name: 'Riverfolk Company',
     set: 'Riverfolk Expansion',
-    icon: 'assets/icons/riverfolk.png'
+    icon: 'assets/icons/riverfolk.png',
+    setupCard: 'assets/setup_cards/riverfolk_setup.png',
+    militant: false,
+    insurgent: true
   },
   {
     id: 'lizards',
+    templateId: 'lizards',
     name: 'Lizard Cult',
     set: 'Riverfolk Expansion',
-    icon: 'assets/icons/lizards.png'
+    icon: 'assets/icons/lizards.png',
+    setupCard: 'assets/setup_cards/lizards_setup.png',
+    militant: false,
+    insurgent: true
   },
   {
     id: 'duchy',
+    templateId: 'duchy',
     name: 'Underground Duchy',
     set: 'Underworld Expansion',
-    icon: 'assets/icons/duchy.png'
+    icon: 'assets/icons/duchy.png',
+    setupCard: 'assets/setup_cards/duchy_setup.png',
+    militant: true
   },
   {
     id: 'corvid',
+    templateId: 'corvid',
     name: 'Corvid Conspiracy',
     set: 'Underworld Expansion',
-    icon: 'assets/icons/corvid.png'
+    icon: 'assets/icons/corvid.png',
+    setupCard: 'assets/setup_cards/corvid_setup.png',
+    militant: false,
+    insurgent: true
   },
   {
     id: 'hundreds',
+    templateId: 'hundreds',
     name: 'Lord of the Hundreds',
     set: 'Marauder Expansion',
-    icon: 'assets/icons/hundreds.png'
+    icon: 'assets/icons/hundreds.png',
+    setupCard: 'assets/setup_cards/hundreds_setup.png',
+    militant: true
   },
   {
     id: 'keepers',
+    templateId: 'keepers',
     name: 'Keepers in Iron',
     set: 'Marauder Expansion',
-    icon: 'assets/icons/keepers.png'
+    icon: 'assets/icons/keepers.png',
+    setupCard: 'assets/setup_cards/keepers_setup.png',
+    militant: true
   }
 ];
+
+const advancedById = Object.fromEntries(advancedCards.map((card) => [card.id, card]));
+
+const modeQuickBtn = document.getElementById('modeQuickBtn');
+const modeAdvancedBtn = document.getElementById('modeAdvancedBtn');
+const quickModeView = document.getElementById('quickModeView');
+const advancedModeView = document.getElementById('advancedModeView');
 
 const playerCountInput = document.getElementById('playerCount');
 const playerInputs = document.getElementById('playerInputs');
@@ -84,28 +151,93 @@ const settingsActions = document.getElementById('settingsActions');
 const statusHintSlot = document.getElementById('statusHintSlot');
 const actionsPanel = document.querySelector('.actions-panel');
 
+const adPlayersScreen = document.getElementById('adPlayersScreen');
+const adFactionsScreen = document.getElementById('adFactionsScreen');
+const adDraftScreen = document.getElementById('adDraftScreen');
+const adPlayerCount = document.getElementById('adPlayerCount');
+const adPlayerInputs = document.getElementById('adPlayerInputs');
+const adRollOrderBtn = document.getElementById('adRollOrderBtn');
+const adTurnOrder = document.getElementById('adTurnOrder');
+const adToFactionsBtn = document.getElementById('adToFactionsBtn');
+const adResetFromPlayersBtn = document.getElementById('adResetFromPlayersBtn');
+const adFactionList = document.getElementById('adFactionList');
+const adSelectAllBtn = document.getElementById('adSelectAllBtn');
+const adClearAllBtn = document.getElementById('adClearAllBtn');
+const adBackToPlayersBtn = document.getElementById('adBackToPlayersBtn');
+const adToDraftBtn = document.getElementById('adToDraftBtn');
+const adResetFromFactionsBtn = document.getElementById('adResetFromFactionsBtn');
+const adCurrentPicker = document.getElementById('adCurrentPicker');
+const adDraftStatus = document.getElementById('adDraftStatus');
+const adDraftChoices = document.getElementById('adDraftChoices');
+const adSetupCardWrap = document.getElementById('adSetupCardWrap');
+const adSetupCardImage = document.getElementById('adSetupCardImage');
+const adPrevPickBtn = document.getElementById('adPrevPickBtn');
+const adCompletePickBtn = document.getElementById('adCompletePickBtn');
+const adResetFromDraftBtn = document.getElementById('adResetFromDraftBtn');
+const adFinalAssignments = document.getElementById('adFinalAssignments');
+
 const state = {
-  selected: new Set(factions.filter((f) => f.set === 'Base Game').map((f) => f.id)),
-  players: 4,
-  names: Array.from({ length: 4 }, (_, i) => `Player ${i + 1}`),
-  lastResult: null,
-  step: 'players'
+  mode: 'quick',
+  quick: {
+    selected: new Set(quickFactions.filter((f) => f.set === 'Base Game').map((f) => f.id)),
+    players: 4,
+    names: Array.from({ length: 4 }, (_, i) => `Player ${i + 1}`),
+    lastResult: null,
+    step: 'players'
+  },
+  advanced: {
+    players: 4,
+    names: Array.from({ length: 4 }, (_, i) => `Player ${i + 1}`),
+    turnOrder: [],
+    draftOrder: [],
+    selectedCards: new Set(advancedCards.map((card) => card.id)),
+    draftPool: [],
+    delayedCardId: null,
+    picks: [],
+    pendingCardId: null
+  }
 };
 
-function updatePlayerInputs() {
-  const count = Number(playerCountInput.value) || 1;
-  state.players = count;
+function shuffle(list) {
+  const copy = [...list];
+  for (let i = copy.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
 
-  if (state.names.length < count) {
-    for (let i = state.names.length; i < count; i += 1) {
-      state.names.push(`Player ${i + 1}`);
+function setMode(mode) {
+  state.mode = mode;
+  const isQuick = mode === 'quick';
+  modeQuickBtn.classList.toggle('active', isQuick);
+  modeAdvancedBtn.classList.toggle('active', !isQuick);
+  quickModeView.classList.toggle('hidden', !isQuick);
+  advancedModeView.classList.toggle('hidden', isQuick);
+}
+
+function setQuickStep(step) {
+  state.quick.step = step;
+  settingsView.dataset.step = step;
+  tabPlayersBtn.classList.toggle('active', step === 'players');
+  tabFactionsBtn.classList.toggle('active', step === 'factions');
+}
+
+function updateQuickPlayerInputs() {
+  const count = Math.min(8, Math.max(1, Number(playerCountInput.value) || 1));
+  playerCountInput.value = String(count);
+  state.quick.players = count;
+
+  if (state.quick.names.length < count) {
+    for (let i = state.quick.names.length; i < count; i += 1) {
+      state.quick.names.push(`Player ${i + 1}`);
     }
-  } else if (state.names.length > count) {
-    state.names = state.names.slice(0, count);
+  } else if (state.quick.names.length > count) {
+    state.quick.names = state.quick.names.slice(0, count);
   }
 
   playerInputs.innerHTML = '';
-  state.names.forEach((name, index) => {
+  state.quick.names.forEach((name, index) => {
     const wrapper = document.createElement('div');
     wrapper.className = 'field-row';
 
@@ -118,7 +250,7 @@ function updatePlayerInputs() {
     input.id = `player-${index}`;
     input.value = name;
     input.addEventListener('input', (event) => {
-      state.names[index] = event.target.value.trim() || `Player ${index + 1}`;
+      state.quick.names[index] = event.target.value.trim() || `Player ${index + 1}`;
     });
 
     wrapper.appendChild(label);
@@ -126,14 +258,14 @@ function updatePlayerInputs() {
     playerInputs.appendChild(wrapper);
   });
 
-  validateSelection();
+  validateQuickSelection();
 }
 
-function renderFactions() {
+function renderQuickFactions() {
   const term = factionSearch.value.trim().toLowerCase();
   factionList.innerHTML = '';
 
-  const filtered = factions.filter((faction) =>
+  const filtered = quickFactions.filter((faction) =>
     faction.name.toLowerCase().includes(term) || faction.set.toLowerCase().includes(term)
   );
 
@@ -143,15 +275,14 @@ function renderFactions() {
 
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
-    checkbox.checked = state.selected.has(faction.id);
+    checkbox.checked = state.quick.selected.has(faction.id);
     checkbox.addEventListener('change', () => {
       if (checkbox.checked) {
-        state.selected.add(faction.id);
+        state.quick.selected.add(faction.id);
       } else {
-        state.selected.delete(faction.id);
+        state.quick.selected.delete(faction.id);
       }
-      updateCounts();
-      validateSelection();
+      validateQuickSelection();
     });
 
     const icon = document.createElement('img');
@@ -162,22 +293,12 @@ function renderFactions() {
 
     const meta = document.createElement('div');
     meta.className = 'faction-meta';
-
     const name = document.createElement('strong');
     name.textContent = faction.name;
-
     const set = document.createElement('span');
     set.textContent = faction.set;
-
     meta.appendChild(name);
     meta.appendChild(set);
-
-    if (faction.tag) {
-      const badge = document.createElement('span');
-      badge.className = 'badge';
-      badge.textContent = faction.tag;
-      meta.appendChild(badge);
-    }
 
     card.appendChild(checkbox);
     card.appendChild(icon);
@@ -186,61 +307,25 @@ function renderFactions() {
   });
 }
 
-function updateCounts() {
-}
-
-function validateSelection() {
-  const selectedCount = state.selected.size;
-  if (selectedCount < state.players) {
-    statusHint.textContent = `Select at least ${state.players} factions.`;
+function validateQuickSelection() {
+  if (state.quick.selected.size < state.quick.players) {
+    statusHint.textContent = `Select at least ${state.quick.players} factions.`;
     statusHint.style.color = '#b0472c';
     return false;
   }
-
   statusHint.textContent = 'Ready to randomize.';
   statusHint.style.color = 'var(--moss)';
   return true;
 }
 
-function shuffle(list) {
-  const copy = [...list];
-  for (let i = copy.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j], copy[i]];
-  }
-  return copy;
-}
-
-function randomize() {
-  if (!validateSelection()) {
-    return;
-  }
-
-  const selectedFactions = factions.filter((faction) => state.selected.has(faction.id));
-  const chosenFactions = shuffle(selectedFactions).slice(0, state.players);
-  const players = [...state.names];
-  const playerOrder = shuffle(players);
-
-  const assignments = shuffle(players).map((player, index) => ({
-    player,
-    faction: chosenFactions[index]
-  }));
-
-  state.lastResult = { assignments, playerOrder };
-  renderResults();
-  showResults();
-}
-
-function renderResults() {
-  if (!state.lastResult) {
+function renderQuickResults() {
+  if (!state.quick.lastResult) {
     resultsContainer.className = 'results';
     resultsContainer.innerHTML = '<p>Randomize to generate assignments and turn order.</p>';
     return;
   }
 
-  resultsContainer.className = 'results';
-  const { assignments, playerOrder } = state.lastResult;
-
+  const { assignments, playerOrder } = state.quick.lastResult;
   const assignmentList = document.createElement('div');
   assignmentList.className = 'result-list';
 
@@ -269,73 +354,75 @@ function renderResults() {
     icon.decoding = 'async';
     icon.className = 'result-icon';
 
+    const textWrap = document.createElement('div');
     const playerName = document.createElement('strong');
     playerName.textContent = item.player;
     const factionName = document.createElement('span');
     factionName.textContent = item.faction.name;
-    const textWrap = document.createElement('div');
     textWrap.appendChild(playerName);
     textWrap.appendChild(document.createElement('br'));
     textWrap.appendChild(factionName);
 
     right.appendChild(icon);
     right.appendChild(textWrap);
-
     row.appendChild(order);
     row.appendChild(right);
     assignmentList.appendChild(row);
   });
 
+  resultsContainer.className = 'results';
   resultsContainer.innerHTML = '';
   resultsContainer.appendChild(assignmentList);
 }
 
-function copyResults() {
-  if (!state.lastResult) {
+function randomizeQuick() {
+  if (!validateQuickSelection()) {
     return;
   }
-  const { assignments, playerOrder } = state.lastResult;
+
+  const selectedFactions = quickFactions.filter((f) => state.quick.selected.has(f.id));
+  const chosenFactions = shuffle(selectedFactions).slice(0, state.quick.players);
+  const players = [...state.quick.names];
+  const playerOrder = shuffle(players);
+  const assignments = shuffle(players).map((player, index) => ({
+    player,
+    faction: chosenFactions[index]
+  }));
+
+  state.quick.lastResult = { assignments, playerOrder };
+  renderQuickResults();
+  settingsView.classList.add('hidden');
+  resultsView.classList.remove('hidden');
+}
+
+function copyQuickResults() {
+  if (!state.quick.lastResult) {
+    return;
+  }
+  const { assignments, playerOrder } = state.quick.lastResult;
   const lines = ['Faction Assignments'];
-  assignments.forEach((item) => {
-    lines.push(`${item.player}: ${item.faction.name}`);
-  });
+  assignments.forEach((item) => lines.push(`${item.player}: ${item.faction.name}`));
   lines.push('');
   lines.push('Turn Order');
-  playerOrder.forEach((player, index) => {
-    lines.push(`${index + 1}. ${player}`);
-  });
-
+  playerOrder.forEach((player, index) => lines.push(`${index + 1}. ${player}`));
   navigator.clipboard.writeText(lines.join('\n')).then(() => {
     statusHint.textContent = 'Results copied to clipboard.';
     statusHint.style.color = 'var(--teal)';
   });
 }
 
-function resetSelections() {
-  state.selected = new Set(factions.filter((f) => f.set === 'Base Game').map((f) => f.id));
-  updateCounts();
-  renderFactions();
-  validateSelection();
+function resetQuickSelections() {
+  state.quick.selected = new Set(quickFactions.filter((f) => f.set === 'Base Game').map((f) => f.id));
+  renderQuickFactions();
+  validateQuickSelection();
 }
 
-function showResults() {
-  settingsView.classList.add('hidden');
-  resultsView.classList.remove('hidden');
-}
-
-function showSettings() {
+function showQuickSettings() {
   resultsView.classList.add('hidden');
   settingsView.classList.remove('hidden');
 }
 
-function setStep(step) {
-  state.step = step;
-  settingsView.dataset.step = step;
-  tabPlayersBtn.classList.toggle('active', step === 'players');
-  tabFactionsBtn.classList.toggle('active', step === 'factions');
-}
-
-function syncMobileActions() {
+function syncQuickMobileActions() {
   const isMobile = window.matchMedia('(max-width: 880px)').matches;
   if (isMobile) {
     if (settingsActions && randomizeBtn.parentElement !== settingsActions) {
@@ -346,9 +433,7 @@ function syncMobileActions() {
     }
     randomizeBtn.classList.remove('primary');
     randomizeBtn.classList.add('chip');
-    if (resetBtn) {
-      resetBtn.style.display = 'none';
-    }
+    resetBtn.style.display = 'none';
   } else {
     if (actionsPanel && randomizeBtn.parentElement !== actionsPanel) {
       actionsPanel.insertBefore(randomizeBtn, actionsPanel.firstChild);
@@ -356,47 +441,401 @@ function syncMobileActions() {
     }
     randomizeBtn.classList.remove('chip');
     randomizeBtn.classList.add('primary');
-    if (resetBtn) {
-      resetBtn.style.display = '';
-    }
+    resetBtn.style.display = '';
   }
 }
 
-playerCountInput.addEventListener('change', updatePlayerInputs);
-playerCountInput.addEventListener('input', updatePlayerInputs);
+function setAdScreen(screenId) {
+  adPlayersScreen.classList.toggle('hidden', screenId !== 'players');
+  adFactionsScreen.classList.toggle('hidden', screenId !== 'factions');
+  adDraftScreen.classList.toggle('hidden', screenId !== 'draft');
+}
 
-factionSearch.addEventListener('input', renderFactions);
-randomizeBtn.addEventListener('click', randomize);
-rerollBtn.addEventListener('click', randomize);
-copyBtn.addEventListener('click', copyResults);
-resetBtn.addEventListener('click', resetSelections);
-backBtn.addEventListener('click', showSettings);
-tabPlayersBtn.addEventListener('click', () => setStep('players'));
-tabFactionsBtn.addEventListener('click', () => setStep('factions'));
+function sanitizeAdvancedNames() {
+  state.advanced.names = state.advanced.names.map((name, index) => name.trim() || `Player ${index + 1}`);
+}
+
+function updateAdvancedPlayerInputs() {
+  const count = Math.min(8, Math.max(2, Number(adPlayerCount.value) || 2));
+  adPlayerCount.value = String(count);
+  state.advanced.players = count;
+
+  if (state.advanced.names.length < count) {
+    for (let i = state.advanced.names.length; i < count; i += 1) {
+      state.advanced.names.push(`Player ${i + 1}`);
+    }
+  } else if (state.advanced.names.length > count) {
+    state.advanced.names = state.advanced.names.slice(0, count);
+  }
+
+  adPlayerInputs.innerHTML = '';
+  state.advanced.names.forEach((name, index) => {
+    const row = document.createElement('div');
+    row.className = 'field-row';
+
+    const label = document.createElement('label');
+    label.textContent = `Player ${index + 1}`;
+    label.setAttribute('for', `ad-player-${index}`);
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.id = `ad-player-${index}`;
+    input.value = name;
+    input.addEventListener('input', (event) => {
+      state.advanced.names[index] = event.target.value;
+    });
+
+    row.appendChild(label);
+    row.appendChild(input);
+    adPlayerInputs.appendChild(row);
+  });
+}
+
+function renderAdvancedTurnOrder() {
+  if (!state.advanced.turnOrder.length) {
+    adTurnOrder.innerHTML = '<p>Generate turn order to continue.</p>';
+    return;
+  }
+
+  const list = document.createElement('div');
+  list.className = 'result-list';
+  state.advanced.turnOrder.forEach((name, index) => {
+    const row = document.createElement('div');
+    row.className = 'result-item';
+    const rank = document.createElement('span');
+    rank.className = 'order-pill';
+    rank.textContent = String(index + 1);
+    const text = document.createElement('strong');
+    text.textContent = name;
+    row.appendChild(rank);
+    row.appendChild(text);
+    list.appendChild(row);
+  });
+
+  adTurnOrder.innerHTML = '';
+  adTurnOrder.appendChild(list);
+}
+
+function generateAdvancedOrder() {
+  sanitizeAdvancedNames();
+  state.advanced.turnOrder = shuffle(state.advanced.names);
+  state.advanced.draftOrder = [...state.advanced.turnOrder].reverse();
+  renderAdvancedTurnOrder();
+}
+
+function renderAdvancedFactionList() {
+  adFactionList.innerHTML = '';
+
+  advancedCards.forEach((card) => {
+    const box = document.createElement('label');
+    box.className = 'faction-card';
+
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.checked = state.advanced.selectedCards.has(card.id);
+    checkbox.addEventListener('change', () => {
+      if (checkbox.checked) {
+        state.advanced.selectedCards.add(card.id);
+      } else {
+        state.advanced.selectedCards.delete(card.id);
+      }
+    });
+
+    const icon = document.createElement('img');
+    icon.src = card.icon;
+    icon.alt = `${card.name} icon`;
+
+    const meta = document.createElement('div');
+    meta.className = 'faction-meta';
+    const name = document.createElement('strong');
+    name.textContent = card.name;
+    const set = document.createElement('span');
+    set.textContent = card.set;
+    meta.appendChild(name);
+    meta.appendChild(set);
+
+    box.appendChild(checkbox);
+    box.appendChild(icon);
+    box.appendChild(meta);
+    adFactionList.appendChild(box);
+  });
+}
+
+function canMoveToAdvancedFactions() {
+  return state.advanced.turnOrder.length === state.advanced.players && state.advanced.draftOrder.length === state.advanced.players;
+}
+
+function getAdvancedDraftPool() {
+  const selectedCards = advancedCards.filter((card) => state.advanced.selectedCards.has(card.id));
+  const needed = state.advanced.players + 1;
+  if (selectedCards.length < needed) {
+    return null;
+  }
+
+  const militants = selectedCards.filter((card) => card.militant);
+  if (!militants.length) {
+    return null;
+  }
+
+  // Militant-seeded pool: first slot is always militant, remaining cards are random.
+  const firstMilitant = shuffle(militants)[0];
+  const remaining = shuffle(selectedCards.filter((card) => card.id !== firstMilitant.id)).slice(0, needed - 1);
+  const pool = [firstMilitant, ...remaining];
+  const maybeDelayed = pool[pool.length - 1];
+  state.advanced.delayedCardId = maybeDelayed && maybeDelayed.insurgent ? maybeDelayed.id : null;
+  return pool;
+}
+
+function getCardAvailability(card) {
+  const chosenIds = new Set(state.advanced.picks.map((pick) => pick.cardId));
+  if (chosenIds.has(card.id)) {
+    return { available: false, reason: 'Already chosen' };
+  }
+
+  const militantChosen = state.advanced.picks.filter((pick) => advancedById[pick.cardId].militant).length;
+  if (state.advanced.delayedCardId === card.id && militantChosen < 1) {
+    return { available: false, reason: 'Locked until at least one militant faction is chosen' };
+  }
+
+  return { available: true, reason: 'Available' };
+}
+
+function renderAdvancedFinalAssignments() {
+  if (state.advanced.picks.length !== state.advanced.players) {
+    adFinalAssignments.classList.add('hidden');
+    adFinalAssignments.innerHTML = '';
+    return;
+  }
+
+  const list = document.createElement('div');
+  list.className = 'result-list';
+  state.advanced.picks.forEach((pick, index) => {
+    const card = advancedById[pick.cardId];
+    const row = document.createElement('div');
+    row.className = 'result-item';
+
+    const rank = document.createElement('span');
+    rank.className = 'order-pill';
+    rank.textContent = String(index + 1);
+
+    const right = document.createElement('div');
+    right.className = 'result-details';
+
+    const icon = document.createElement('img');
+    icon.src = card.icon;
+    icon.alt = `${card.name} icon`;
+    icon.className = 'result-icon';
+
+    const text = document.createElement('div');
+    const name = document.createElement('strong');
+    name.textContent = pick.player;
+    const faction = document.createElement('span');
+    faction.textContent = card.name;
+    text.appendChild(name);
+    text.appendChild(document.createElement('br'));
+    text.appendChild(faction);
+
+    right.appendChild(icon);
+    right.appendChild(text);
+    row.appendChild(rank);
+    row.appendChild(right);
+    list.appendChild(row);
+  });
+
+  adFinalAssignments.classList.remove('hidden');
+  adFinalAssignments.innerHTML = '';
+  adFinalAssignments.appendChild(list);
+}
+
+function renderAdvancedDraft() {
+  const pickIndex = state.advanced.picks.length;
+  const finished = pickIndex >= state.advanced.players;
+
+  if (finished) {
+    adCurrentPicker.textContent = 'Advanced Setup Complete';
+    adDraftStatus.textContent = 'All players have selected factions.';
+    adCompletePickBtn.disabled = true;
+    adDraftChoices.innerHTML = '';
+    adSetupCardWrap.classList.add('hidden');
+    renderAdvancedFinalAssignments();
+    return;
+  }
+
+  adCurrentPicker.textContent = `${state.advanced.draftOrder[pickIndex]} choosing`;
+  adDraftStatus.textContent = `Pick ${pickIndex + 1} of ${state.advanced.players}`;
+  adCompletePickBtn.disabled = !state.advanced.pendingCardId;
+  adFinalAssignments.classList.add('hidden');
+  adFinalAssignments.innerHTML = '';
+
+  adDraftChoices.innerHTML = '';
+  state.advanced.draftPool.forEach((card) => {
+    const availability = getCardAvailability(card);
+    const row = document.createElement('div');
+    row.className = `draft-choice${availability.available ? '' : ' unavailable'}`;
+
+    const icon = document.createElement('img');
+    icon.src = card.icon;
+    icon.alt = `${card.name} icon`;
+
+    const text = document.createElement('div');
+    const name = document.createElement('strong');
+    name.textContent = card.name;
+    const status = document.createElement('div');
+    status.className = 'status';
+    status.textContent = availability.reason;
+    text.appendChild(name);
+    text.appendChild(status);
+
+    const action = document.createElement('button');
+    action.textContent = state.advanced.pendingCardId === card.id ? 'Selected' : 'Select';
+    action.disabled = !availability.available;
+    action.addEventListener('click', () => {
+      state.advanced.pendingCardId = card.id;
+      adSetupCardImage.src = card.setupCard;
+      adSetupCardImage.alt = `${card.name} setup card`;
+      adSetupCardWrap.classList.remove('hidden');
+      renderAdvancedDraft();
+    });
+
+    row.appendChild(icon);
+    row.appendChild(text);
+    row.appendChild(action);
+    adDraftChoices.appendChild(row);
+  });
+
+  if (!state.advanced.pendingCardId) {
+    adSetupCardWrap.classList.add('hidden');
+  }
+}
+
+function resetAdvancedToStart() {
+  state.advanced.players = 4;
+  state.advanced.names = Array.from({ length: 4 }, (_, i) => `Player ${i + 1}`);
+  state.advanced.turnOrder = [];
+  state.advanced.draftOrder = [];
+  state.advanced.selectedCards = new Set(advancedCards.map((card) => card.id));
+  state.advanced.draftPool = [];
+  state.advanced.delayedCardId = null;
+  state.advanced.picks = [];
+  state.advanced.pendingCardId = null;
+
+  adPlayerCount.value = '4';
+  updateAdvancedPlayerInputs();
+  renderAdvancedTurnOrder();
+  renderAdvancedFactionList();
+  setAdScreen('players');
+}
+
+function initAdvancedDraft() {
+  const draftPool = getAdvancedDraftPool();
+  if (!draftPool) {
+    adDraftStatus.textContent = `Select at least ${state.advanced.players + 1} factions and include a militant faction.`;
+    return;
+  }
+
+  state.advanced.draftPool = draftPool;
+  state.advanced.picks = [];
+  state.advanced.pendingCardId = null;
+  setAdScreen('draft');
+  renderAdvancedDraft();
+}
+
+function completeAdvancedPick() {
+  if (!state.advanced.pendingCardId) {
+    return;
+  }
+
+  const player = state.advanced.draftOrder[state.advanced.picks.length];
+  state.advanced.picks.push({ player, cardId: state.advanced.pendingCardId });
+  state.advanced.pendingCardId = null;
+  renderAdvancedDraft();
+}
+
+function undoAdvancedPick() {
+  if (state.advanced.pendingCardId) {
+    state.advanced.pendingCardId = null;
+    adSetupCardWrap.classList.add('hidden');
+    renderAdvancedDraft();
+    return;
+  }
+
+  if (state.advanced.picks.length > 0) {
+    state.advanced.picks.pop();
+    renderAdvancedDraft();
+    return;
+  }
+
+  setAdScreen('factions');
+}
+
+modeQuickBtn.addEventListener('click', () => setMode('quick'));
+modeAdvancedBtn.addEventListener('click', () => setMode('advanced'));
+
+playerCountInput.addEventListener('change', updateQuickPlayerInputs);
+playerCountInput.addEventListener('input', updateQuickPlayerInputs);
+factionSearch.addEventListener('input', renderQuickFactions);
+randomizeBtn.addEventListener('click', randomizeQuick);
+rerollBtn.addEventListener('click', randomizeQuick);
+copyBtn.addEventListener('click', copyQuickResults);
+resetBtn.addEventListener('click', resetQuickSelections);
+backBtn.addEventListener('click', showQuickSettings);
+tabPlayersBtn.addEventListener('click', () => setQuickStep('players'));
+tabFactionsBtn.addEventListener('click', () => setQuickStep('factions'));
+
 selectBaseBtn.addEventListener('click', () => {
-  state.selected = new Set(factions.filter((f) => f.set === 'Base Game').map((f) => f.id));
-  updateCounts();
-  renderFactions();
-  validateSelection();
+  state.quick.selected = new Set(quickFactions.filter((f) => f.set === 'Base Game').map((f) => f.id));
+  renderQuickFactions();
+  validateQuickSelection();
 });
+
 selectAllBtn.addEventListener('click', () => {
-  state.selected = new Set(factions.map((f) => f.id));
-  updateCounts();
-  renderFactions();
-  validateSelection();
+  state.quick.selected = new Set(quickFactions.map((f) => f.id));
+  renderQuickFactions();
+  validateQuickSelection();
 });
+
 clearAllBtn.addEventListener('click', () => {
-  state.selected = new Set();
-  updateCounts();
-  renderFactions();
-  validateSelection();
+  state.quick.selected = new Set();
+  renderQuickFactions();
+  validateQuickSelection();
 });
 
-updatePlayerInputs();
-updateCounts();
-renderFactions();
-renderResults();
-setStep('players');
-syncMobileActions();
+adPlayerCount.addEventListener('input', updateAdvancedPlayerInputs);
+adRollOrderBtn.addEventListener('click', generateAdvancedOrder);
+adToFactionsBtn.addEventListener('click', () => {
+  if (!canMoveToAdvancedFactions()) {
+    adTurnOrder.innerHTML = `<p>Generate a ${state.advanced.players}-player turn order first.</p>`;
+    return;
+  }
+  setAdScreen('factions');
+});
+adResetFromPlayersBtn.addEventListener('click', resetAdvancedToStart);
 
-window.addEventListener('resize', syncMobileActions);
+adSelectAllBtn.addEventListener('click', () => {
+  state.advanced.selectedCards = new Set(advancedCards.map((card) => card.id));
+  renderAdvancedFactionList();
+});
+
+adClearAllBtn.addEventListener('click', () => {
+  state.advanced.selectedCards = new Set();
+  renderAdvancedFactionList();
+});
+
+adBackToPlayersBtn.addEventListener('click', () => setAdScreen('players'));
+adToDraftBtn.addEventListener('click', initAdvancedDraft);
+adResetFromFactionsBtn.addEventListener('click', resetAdvancedToStart);
+
+adPrevPickBtn.addEventListener('click', undoAdvancedPick);
+adCompletePickBtn.addEventListener('click', completeAdvancedPick);
+adResetFromDraftBtn.addEventListener('click', resetAdvancedToStart);
+
+window.addEventListener('resize', syncQuickMobileActions);
+
+updateQuickPlayerInputs();
+renderQuickFactions();
+renderQuickResults();
+setQuickStep('players');
+syncQuickMobileActions();
+
+resetAdvancedToStart();
+setMode('quick');

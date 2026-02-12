@@ -50,6 +50,12 @@ body {
   margin-bottom: 4px;
 }
 
+.mode-toggle {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
 .eyebrow {
   text-transform: uppercase;
   letter-spacing: 0.14em;
@@ -138,6 +144,15 @@ h1 {
 }
 
 .hidden {
+  display: none;
+}
+
+.mode-view {
+  display: grid;
+  gap: 18px;
+}
+
+.mode-view.hidden {
   display: none;
 }
 
@@ -319,6 +334,68 @@ input[type="number"] {
   gap: 16px;
 }
 
+.compact-results {
+  min-height: 80px;
+}
+
+.draft-choices {
+  display: grid;
+  gap: 10px;
+}
+
+.draft-choice {
+  border: 1px solid rgba(28, 27, 26, 0.15);
+  border-radius: 12px;
+  padding: 10px;
+  background: #fff;
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.draft-choice.unavailable {
+  opacity: 0.45;
+}
+
+.draft-choice img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  border-radius: 10px;
+}
+
+.draft-choice .status {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.draft-choice button {
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(28, 27, 26, 0.2);
+  background: transparent;
+  cursor: pointer;
+}
+
+.setup-card-wrap {
+  display: grid;
+  gap: 8px;
+}
+
+.setup-card-wrap h3 {
+  margin: 0;
+  font-family: 'Fraunces', serif;
+  font-size: 1rem;
+}
+
+.setup-card-image {
+  width: min(100%, 360px);
+  border-radius: 14px;
+  border: 1px solid rgba(28, 27, 26, 0.12);
+  box-shadow: var(--shadow);
+}
+
 .footer {
   margin-top: 32px;
   text-align: center;
@@ -363,7 +440,7 @@ input[type="number"] {
 }
 
 @media (min-width: 900px) {
-  .view {
+  #settingsView {
     grid-template-columns: minmax(0, 1fr) max-content;
     grid-template-areas:
       "players actions"
