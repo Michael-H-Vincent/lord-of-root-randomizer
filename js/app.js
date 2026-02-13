@@ -236,9 +236,19 @@ function setQuickStep(step) {
   tabFactionsBtn.classList.toggle('active', step === 'factions');
 }
 
-function updateQuickPlayerInputs() {
-  const count = Math.min(8, Math.max(1, Number(playerCountInput.value) || 1));
-  playerCountInput.value = String(count);
+function updateQuickPlayerInputs(options = {}) {
+  const { soft = false } = options;
+  const raw = playerCountInput.value.trim();
+  if (soft && raw === '') {
+    return;
+  }
+
+  const parsed = Number.parseInt(raw, 10);
+  const fallback = state.quick.players || 4;
+  const count = Number.isNaN(parsed) ? fallback : Math.min(8, Math.max(1, parsed));
+  if (!soft) {
+    playerCountInput.value = String(count);
+  }
   state.quick.players = count;
 
   if (state.quick.names.length < count) {
@@ -480,9 +490,19 @@ function sanitizeAdvancedNames() {
   state.advanced.names = state.advanced.names.map((name, index) => name.trim() || `Player ${index + 1}`);
 }
 
-function updateAdvancedPlayerInputs() {
-  const count = Math.min(8, Math.max(2, Number(adPlayerCount.value) || 2));
-  adPlayerCount.value = String(count);
+function updateAdvancedPlayerInputs(options = {}) {
+  const { soft = false } = options;
+  const raw = adPlayerCount.value.trim();
+  if (soft && raw === '') {
+    return;
+  }
+
+  const parsed = Number.parseInt(raw, 10);
+  const fallback = state.advanced.players || 4;
+  const count = Number.isNaN(parsed) ? fallback : Math.min(8, Math.max(2, parsed));
+  if (!soft) {
+    adPlayerCount.value = String(count);
+  }
   state.advanced.players = count;
 
   if (state.advanced.names.length < count) {
@@ -806,8 +826,9 @@ function undoAdvancedPick() {
 modeQuickBtn.addEventListener('click', () => setMode('quick'));
 modeAdvancedBtn.addEventListener('click', () => setMode('advanced'));
 
-playerCountInput.addEventListener('change', updateQuickPlayerInputs);
-playerCountInput.addEventListener('input', updateQuickPlayerInputs);
+playerCountInput.addEventListener('change', () => updateQuickPlayerInputs({ soft: false }));
+playerCountInput.addEventListener('blur', () => updateQuickPlayerInputs({ soft: false }));
+playerCountInput.addEventListener('input', () => updateQuickPlayerInputs({ soft: true }));
 factionSearch.addEventListener('input', renderQuickFactions);
 randomizeBtn.addEventListener('click', randomizeQuick);
 rerollBtn.addEventListener('click', randomizeQuick);
@@ -835,7 +856,9 @@ clearAllBtn.addEventListener('click', () => {
   validateQuickSelection();
 });
 
-adPlayerCount.addEventListener('input', updateAdvancedPlayerInputs);
+adPlayerCount.addEventListener('change', () => updateAdvancedPlayerInputs({ soft: false }));
+adPlayerCount.addEventListener('blur', () => updateAdvancedPlayerInputs({ soft: false }));
+adPlayerCount.addEventListener('input', () => updateAdvancedPlayerInputs({ soft: true }));
 adRollOrderBtn.addEventListener('click', generateAdvancedOrder);
 adRegenOrderBtn.addEventListener('click', generateAdvancedOrder);
 adBackToPlayerEntryBtn.addEventListener('click', () => setAdPlayersStage('entry'));
