@@ -905,6 +905,21 @@ adCompletePickBtn.addEventListener('click', completeAdvancedPick);
 adResetFromDraftBtn.addEventListener('click', resetAdvancedToStart);
 adResetFromCardStageBtn.addEventListener('click', resetAdvancedToStart);
 
+document.addEventListener('focusin', (event) => {
+  const target = event.target;
+  if (!(target instanceof HTMLInputElement)) {
+    return;
+  }
+  if (!target.matches('input[type=\"text\"], input[type=\"number\"]')) {
+    return;
+  }
+  if (target.value === '') {
+    return;
+  }
+  target.value = '';
+  target.dispatchEvent(new Event('input', { bubbles: true }));
+});
+
 window.addEventListener('resize', syncQuickMobileActions);
 
 updateQuickPlayerInputs();
